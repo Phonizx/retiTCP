@@ -7,7 +7,7 @@
 
 #include "Network.h"
 #include "Message.h"
-
+#include "Operations.h"
 
 void clearWinSock() {
 #if defined WIN32
@@ -57,7 +57,6 @@ int start(int sock) {
 		} else {
 			printf("Connection established with %s:%d\n",
 					inet_ntoa(clientAddress.sin_addr),ntohs(clientAddress.sin_port));
-
 			handleClientConnection(clientSock);
 		}
 	}
@@ -66,35 +65,50 @@ int start(int sock) {
 
 int handleClientConnection(int client) {
 	printf("Gestendo Client connesso\n");
-	char test = ' ';
-	int result;
-
+	int result = 0;
+	int exit = 0;
 	while(1)
 	{
-		recv(client,&msg,sizeof(msg),0);
-		setOp(ntohl(msg.op));
-		setA(ntohl(msg.a));
-		setB(ntohl(msg.b));
-		switch(msg.op)
+		int msgTmp = recv(client,&msg,sizeof(msg),0);
+		if(msgTmp > 0)
 		{
-			case 'A':
-				result = add(getA(),getB());
-				break;
-			case 'S':
-				result = sub(getA(),getB());
-				break;
-			case 'M':
-				result = mult(getA(),getB());
-				break;
-			case 'D':
-				result = dive(getA(),getB());
-				break;
-			case '=':
-				closesocket(client);
+			setOp((msg.op)); // only test
+			setA(ntohl(msg.a));
+			setB(ntohl(msg.b));
+			//printf("Ricevuto: %c %d %d", getOp(),getA(), getB());
+			switch(msg.op)
+			{ // test case
+				case 'A':
+					result = add(getA(),getB());
+					break;
+				case 'S':
+					result = sub(getA(),getB());
+					break;
+				case 'M':
+					result = mult(getA(),getB());
+					break;
+				case 'D':
+					result = dive(getA(),getB());
+					break;
+				case '$':
+					printf("Disconnessione del client\n");
+					exit = 1;
+					break;
 
+			}
+
+			if(result > 0)
+			{
+				result = htons(result);
+				send(client, &result, sizeof(result), 0 );
+				result = 0;
+			}
+			if(exit == 1)
+			{
+				closesocket(client);
+				break; // te
+			}
 		}
-		result = htonl(result);
-		send(client, &result, sizeof(result), 0 );
 	}
 	return 1;
 }
