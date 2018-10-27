@@ -16,7 +16,7 @@ void clearWinSock()
 }
 
 
-int serverListen(int users) // -1 errore | 1 server in ascolto
+int serverSetup(int users) // -1 errore | 1 server in ascolto
 {
 	int socketListener = socket(PF_INET,SOCK_STREAM,IPPROTO_TCP);
 	if(socketListener < 0)
@@ -31,9 +31,9 @@ int serverListen(int users) // -1 errore | 1 server in ascolto
 		socketAddress.sin_family = AF_INET;
 		socketAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
 		socketAddress.sin_port = htons(4444);
-		if(bind(socketListener,(struct sockaddr*) &socketAddress, sizeof(socketAddress)<0)) // bind ritorna 0 o -1
+		if(bind(socketListener,(struct sockaddr*) &socketAddress, sizeof(socketAddress))<0) // bind ritorna 0 o -1
 		{
-			printf("Errore");
+			printf("Errore nel bind");
 			closesocket(socketListener);
 			return -1;
 		}
@@ -46,4 +46,32 @@ int serverListen(int users) // -1 errore | 1 server in ascolto
 			return 1;
 	}
 }
+
+
+
+int  start(int sock)
+{
+	struct sockaddr_in clientAddress;
+	int clientSock;
+	int clientLen;
+	while(1)
+	{
+		clientLen = sizeof(clientAddress);
+		if((clientSock = accept(sock,(struct sockaddr*) &clientAddress,clientLen)) < 0)
+		{
+			printf("Errore nell'accettazione del client");
+			return -1;
+		}
+		else
+			handleClientConnection(clientSock);
+	}
+
+}
+
+int handleClientConnection(int client)
+{
+	printf("Client connesso");
+	return 1;
+}
+
 

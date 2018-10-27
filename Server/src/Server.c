@@ -1,12 +1,3 @@
-/*
- ============================================================================
- Name        : Server.c
- Author      : 
- Version     :
- Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
- ============================================================================
- */
 
 #if defined WIN32
 #include <winsock.h>
@@ -37,9 +28,9 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 #endif
-	serverListen(1);
+	serverSetup(3);
 	//...
-	printf("Server online.\n");
+
 
 #if defined WIN32
 	system("PAUSE");

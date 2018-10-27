@@ -26,7 +26,9 @@
 
 
 void clearWinSock();
-int serverListen(int);
+int serverSetup(int);
+int start(int);
+int handleClientConnection(int);
 
 
 #endif /* NETWORK_H_ */
