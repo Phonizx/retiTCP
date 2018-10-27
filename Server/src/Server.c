@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "Network.h"
 //...
 
 int main(int argc, char *argv[]) {
@@ -36,8 +37,7 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 #endif
-	int my_socket;
-
+	serverListen(1);
 	//...
 	printf("Server online.\n");
 
@@ -47,9 +47,7 @@ int main(int argc, char *argv[]) {
 	getchar();
 #endif
 
-	closesocket(my_socket);
-#if defined WIN32
-	WSACleanup();
-#endif
+	//closesocket(my_socket);
+
 	return 0;
 } // main end
