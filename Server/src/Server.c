@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
 #if defined WIN32
 	system("PAUSE");
 #else
-	getch();
+	getchar();
 #endif
 
 	closesocket(my_socket);
