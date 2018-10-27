@@ -16,5 +16,12 @@ struct message {
 
 struct message msg;
 
+void setOp(char value);
+void setA(int value);
+void setB(int value);
+char getOp();
+int getA();
+int getB();
+
 
 #endif /* MESSAGE_H_ */
