@@ -26,7 +26,7 @@
 
 
 void clearWinSock();
-int serverSetup(int);
+int serverSetup(int, char*);
 int start(int);
 int handleClientConnection(int);
 

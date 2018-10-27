@@ -24,11 +24,13 @@ int main(int argc, char *argv[]) {
 	WSADATA wsa_data;
 	int result = WSAStartup(MAKEWORD(2, 2), &wsa_data);
 	if (result != 0) {
-		printf("Error at WSAStartup()\n");
+		printf("Error at WSAStartup().\n");
 		return 0;
 	}
 #endif
-	serverSetup(3);
+	int results = serverSetup(3,"192.168.3.217");
+
+	printf("Result: %i\n", results);
 	//...
 
 
