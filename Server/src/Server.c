@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 #endif
-	int results = serverSetup(3,"192.168.3.217");
+	int results = serverSetup(3,"192.168.3.199");
 
 	printf("Result: %i\n", results);
 	//...
