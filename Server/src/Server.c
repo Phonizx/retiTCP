@@ -15,10 +15,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Network.h"
-//...
+
 
 int main(int argc, char *argv[]) {
-	//...
+
 #if defined WIN32
 	// Initialize Winsock
 	WSADATA wsa_data;
@@ -30,17 +30,12 @@ int main(int argc, char *argv[]) {
 #endif
 	int results = serverSetup(3,"192.168.3.199");
 
-	printf("Result: %i\n", results);
-	//...
-
 
 #if defined WIN32
 	system("PAUSE");
 #else
 	getchar();
 #endif
-
-	//closesocket(my_socket);
 
 	return 0;
 } // main end

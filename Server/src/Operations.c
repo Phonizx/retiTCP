@@ -1,11 +1,3 @@
-/*
- * Operations.c
- *
- *  Created on: 27 ott 2018
- *      Author: phinkie
- */
-
-
 #include "Operations.h"
 #include "Message.h"
 

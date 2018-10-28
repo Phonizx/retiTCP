@@ -1,9 +1,3 @@
-/*
- * Network.c
- *
- *  Created on: 27 ott 2018
- *      Author: phinkie
- */
 
 #include "Network.h"
 #include "Message.h"
@@ -19,7 +13,7 @@ int serverSetup(int users, char* IPaddr) // -1 errore | 1 server in ascolto
 {
 	int socketListener = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (socketListener < 0) {
-		printf("Errore nella creazione del socket.\n");
+		printf("Socket creation error\n");
 		clearWinSock();
 		return -1;
 	} else {
@@ -27,18 +21,18 @@ int serverSetup(int users, char* IPaddr) // -1 errore | 1 server in ascolto
 		socketAddress.sin_family = AF_INET;
 		socketAddress.sin_addr.s_addr = inet_addr(IPaddr);
 		socketAddress.sin_port = htons(4444);
-		if (bind(socketListener, (struct sockaddr*) &socketAddress,
-				sizeof(socketAddress)) < 0) // bind ritorna 0 o -1
-				{
-			printf("Errore nel bind.\n");
+		if (bind(socketListener, (struct sockaddr*) &socketAddress, sizeof(socketAddress)) < 0) // bind ritorna 0 o -1
+		{
+			printf("Server Error\n");
 			closesocket(socketListener);
 			return -1;
 		}
 		if (listen(socketListener, users) < 0) {
-			printf("Errore nel set listen.\n");
+			printf("Server Error.\n");
 			closesocket(socketListener);
 			return -1;
 		} else {
+			printf("Listening on port: %d ...\n", htons(socketAddress.sin_port));
 			start(socketListener);
 			return 1;
 		}
@@ -53,7 +47,8 @@ int start(int sock) {
 		clientLen = sizeof(clientAddress);
 		if ((clientSock = accept(sock, (struct sockaddr*) &clientAddress,
 				&clientLen)) < 0) {
-			printf("Errore nell'accettazione del client\n");
+			printf("Error in establishing a connection with: %s:%d\n",
+					inet_ntoa(clientAddress.sin_addr),ntohs(clientAddress.sin_port));
 		} else {
 			printf("Connection established with %s:%d\n",
 					inet_ntoa(clientAddress.sin_addr),ntohs(clientAddress.sin_port));
@@ -64,7 +59,6 @@ int start(int sock) {
 }
 
 int handleClientConnection(int client) {
-	printf("Gestendo Client connesso\n");
 	int result = 0;
 	int exit = 0;
 	while(1)
@@ -72,41 +66,46 @@ int handleClientConnection(int client) {
 		int msgTmp = recv(client,&msg,sizeof(msg),0);
 		if(msgTmp > 0)
 		{
-			setOp((msg.op)); // only test
+			setOp((msg.op));
 			setA(ntohl(msg.a));
 			setB(ntohl(msg.b));
-			//printf("Ricevuto: %c %d %d", getOp(),getA(), getB());
+			int a = getA();
+			int b = getB();
 			switch(msg.op)
-			{ // test case
+			{
 				case 'A':
-					result = add(getA(),getB());
+					printf("Required operation: %d + %d\n",a,b);
+					result = add(a,b);
 					break;
 				case 'S':
-					result = sub(getA(),getB());
+					printf("Required operation: %d - %d\n",a,b);
+					result = sub(a,b);
 					break;
 				case 'M':
-					result = mult(getA(),getB());
+					printf("Required operation: %d * %d\n",a,b);
+					result = mult(a,b);
 					break;
 				case 'D':
-					result = dive(getA(),getB());
+					printf("Required operation: %d / %d\n",a,b);
+					result = dive(a,b);
 					break;
 				case '$':
-					printf("Disconnessione del client\n");
+					printf("Client Disconnection...\n");
 					exit = 1;
 					break;
-
 			}
 
 			if(result > 0)
 			{
 				result = htons(result);
 				send(client, &result, sizeof(result), 0 );
+				printf("Result sent: %d\n",htons(result)); // warning
 				result = 0;
 			}
 			if(exit == 1)
 			{
 				closesocket(client);
-				break; // te
+				break;
 			}
 		}
 	}

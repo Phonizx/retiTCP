@@ -1,9 +1,4 @@
-/*
- * Messsage.c
- *
- *  Created on: 27 ott 2018
- *      Author: phinkie
- */
+
 #include "Message.h"
 
 void setOp(char value)

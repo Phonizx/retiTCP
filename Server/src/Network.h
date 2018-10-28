@@ -1,10 +1,3 @@
-/*
- * Network.h
- *
- *  Created on: 27 ott 2018
- *      Author: phinkie
- */
-
 #ifndef NETWORK_H_
 #define NETWORK_H_
 
