@@ -42,7 +42,8 @@ struct Message sceltautente() {
 		printf(
 				"Inserire l'operazione da eseguire usando i caratteri %c, %c, %c, %c,\n"
 						"rispettivamente per Addizione, Moltiplicazione, Sottrazione e Divisione\n"
-						"oppure il carattere %c per terminare: ", ADD, SOT, MOL, DIV, EQUI);
+						"oppure il carattere %c per terminare: ", ADD, SOT, MOL,
+				DIV, EQUI);
 		scanf("%c", &operazione);
 	} while (!(operazione == ADD || operazione == SOT || operazione == MOL
 			|| operazione == DIV || operazione == EQUI));
@@ -59,8 +60,7 @@ struct Message sceltautente() {
 				flag = 1;
 			}
 		} while (flag);
-	}
-	else
+	} else
 		operazione = EQU;
 	return createMsg(operazione, htonl(x), htonl(y));
 }
@@ -75,11 +75,32 @@ int main(int argc, char *argv[]) {
 		return 0;
 	}
 #endif
-	char ip[] = "192.168.3.199";
 	int port = 4444;
 	int descrSocket;
 	// SETUP + CONNECTION
-	descrSocket = setup(ip, port);
+	struct hostent *host;
+	/************gethostbyname*****************/
+	char *nomeServer = "GesuCri";
+	host = gethostbyname(nomeServer);
+	// CONTROLLO RISOLUZIONE NOME
+	if (host == NULL) {
+		printf("non finziona il gethostbyname\n.");
+		system("pause");
+		return 0;
+	}
+	struct in_addr * ina = (struct in_addr*) host->h_addr_list[0];
+	printf("Il server ha ip '%s'.\n", inet_ntoa(*ina));
+
+	/************gethostbyaddr*****************/
+
+	const char *ip = "192.168.4.153";
+	struct in_addr addr;
+	addr.s_addr = inet_addr(ip);
+
+	host = gethostbyaddr((char *) &addr, 4, AF_INET);
+	printf("dacci tu una mano %s", host->h_name);
+
+	descrSocket = setup(inet_ntoa(*ina), port);
 
 	while (1) {
 		if (descrSocket > 0) {
